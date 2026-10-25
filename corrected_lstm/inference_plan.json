@@ -1,0 +1,22 @@
+{
+  "status": "Retrospective exploratory; outcomes were already known before inference choices.",
+  "primary_estimand": "E[(Y-training_mean)^2-(Y-fixed_LSTM_prediction)^2] on random generated test strands",
+  "primary_null": "mean squared-loss improvement <= 0",
+  "alternative": "mean squared-loss improvement > 0",
+  "bootstrap": "2000 paired strand resamples with replacement; fixed trained model and fixed training-mean predictor; seed=751903",
+  "test": "Studentized, null-centered nonparametric bootstrap; plus-one upper-tail Monte Carlo p=(1+exceedances)/(B+1)",
+  "intervals": "two-sided 95% percentile paired-bootstrap CIs for R2, MSE, mean squared-loss improvement, and residual mean; quartile MSE intervals are pointwise descriptive only",
+  "secondary_metrics": "held-out R2 = 1-SSE/SST using test mean only in denominator, RMSE, MAE, prediction-minus-target bias",
+  "historical_models": "Descriptive comparison only; no paired tests or R2 inferred from old MSEs",
+  "limits": "Conditional on one fitted model, one split and NUPACK-generated random strands. No across-seed or experimental-validation inference.",
+  "extension": "Requested after initial LSTM inference. Retrospective family; no prospective confirmatory claim.",
+  "comparisons": [
+    "Corrected LSTM vs training-mean predictor on its 100,000 test strands",
+    "Saved larger Transformer vs recovered training-mean predictor on its 100,000 historical evaluation strands",
+    "Larger Transformer vs corrected LSTM on common strands with unique canonical float32 labels; positive gain favors Transformer"
+  ],
+  "extension_bootstrap": "2000 paired, studentized, null-centered resamples; seed 751904 for historical Transformer and 751905 for common cohort; 95% percentile intervals",
+  "multiplicity": "Report raw bootstrap Monte Carlo p-values and Holm-adjusted values across these three retrospective comparisons.",
+  "matching": "Canonicalize labels to original float32 training dtype; require uniqueness within the entire original million-strand dataset and CSV; exclude ambiguity; verify row IDs and labels against corrected-LSTM saved indices.",
+  "unavailable": "No formal tests or inferred R2 for historical models without recoverable prediction-label pairs. Epoch loss curves are not independent test observations."
+}

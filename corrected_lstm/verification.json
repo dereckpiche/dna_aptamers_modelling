@@ -1,0 +1,13 @@
+{
+  "different_batch_size": 257,
+  "recalculated_test_mse": 0.5995497237450461,
+  "stored_test_mse": 0.5995497236725273,
+  "absolute_difference": 7.251876876779306e-11,
+  "disjoint_split_indices": true,
+  "checks": {
+    "alone_vs_batch": true,
+    "batch_permutation": true,
+    "other_strands_do_not_change_prediction": true,
+    "reject_flat_input": true
+  }
+}

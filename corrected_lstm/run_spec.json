@@ -1,0 +1,40 @@
+{
+  "spec": {
+    "seed": 20261025,
+    "hidden_size": 64,
+    "layers": 2,
+    "dropout": 0.6,
+    "learning_rate": 0.001,
+    "batch_size": 512,
+    "max_epochs": 15,
+    "patience": 4,
+    "train_fraction": 0.8,
+    "validation_fraction": 0.1,
+    "input_shape": "batch,30,4",
+    "encoding": "ATCG",
+    "threads": 2
+  },
+  "dataset_sha256": "fac07d8c27b7b39dc8233e92ddb161710b082e433894cc8cb2ddafafbb30435c",
+  "observations": 1000000,
+  "split_sizes": [
+    800000,
+    100000,
+    100000
+  ],
+  "unique_strands": 1000000,
+  "torch_version": "2.14.1+cpu",
+  "numpy_version": "2.5.2",
+  "source": "https://github.com/dereckpiche/dna_aptamers_modelling/blob/main/src/data/strandenergylist.json",
+  "original_results": {
+    "MLP_report": 0.94,
+    "LSTM_report": 0.91,
+    "Transformer_report": 0.15,
+    "Larger_Transformer_best_report": 0.12
+  },
+  "limitations": [
+    "New split; original split indices unavailable.",
+    "Smaller hidden dimension than original; not a controlled architecture comparison.",
+    "CPU fresh training, not continuation of incompatible old weights.",
+    "One seed; simulated NUPACK labels, not experimental binding measurements."
+  ]
+}

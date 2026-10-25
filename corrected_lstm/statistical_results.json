@@ -1,0 +1,33 @@
+{
+  "n_test": 100000,
+  "mse": 0.5995497237450461,
+  "rmse": 0.7743059626175212,
+  "mae": 0.572293262141943,
+  "r2": 0.6308769522050386,
+  "r2_ci95": [
+    0.6263364231478405,
+    0.6355077496689736
+  ],
+  "mse_ci95": [
+    0.5911852983432935,
+    0.6080556813253355
+  ],
+  "mean_squared_loss_improvement": 1.024810380564988,
+  "loss_improvement_ci95": [
+    1.0087014356714266,
+    1.0413064681785906
+  ],
+  "bias": -0.020680182869434356,
+  "bias_ci95": [
+    -0.02540976018342376,
+    -0.015911367575444285
+  ],
+  "primary_statistic": 123.74343261799196,
+  "primary_bootstrap_one_sided_p": 0.0004997501249375312,
+  "null_exceedances": 0,
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 751903,
+  "mc_tail_probability_upper95": 0.0014967448951882837,
+  "analysis_status": "Retrospective exploratory; conditional on one fitted model",
+  "historical_model_comparisons": "Saved larger Transformer: paired comparison on 9371 uniquely identified common strands"
+}

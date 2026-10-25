@@ -1,0 +1,10 @@
+{
+  "historical_csv_rows": 100000,
+  "unique_identifiable_rows": 93788,
+  "ambiguous_rows_excluded": 6212,
+  "common_strands": 9371,
+  "identification": "Unique canonical float32 target values; not original archived IDs",
+  "recovered_transformer_training_mean": -3.3453657729121877,
+  "historical_csv_sha256": "f61b1a916021f22990aa137fcfc47c7950138cc408936fe0c110197f7601b318",
+  "evaluation_status": "Historically monitored evaluation set; retrospective inference"
+}

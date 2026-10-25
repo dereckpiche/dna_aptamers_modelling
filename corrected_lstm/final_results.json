@@ -1,0 +1,17 @@
+{
+  "test_mse": 0.5995497236725273,
+  "test_rmse": 0.774305962570693,
+  "validation_mse": 0.6044421316767763,
+  "selected_epoch": 15,
+  "epochs_completed": 15,
+  "test_observations": 100000,
+  "training_mean_test_mse": 1.624360104310034,
+  "tests": {
+    "alone_vs_batch": true,
+    "batch_permutation": true,
+    "other_strands_do_not_change_prediction": true,
+    "reject_flat_input": true
+  },
+  "parameters": 51265,
+  "total_epoch_seconds": 2147.7250051498413
+}

@@ -1,0 +1,15 @@
+{
+  "training_mean": -3.345935820462946,
+  "n_train": 800000,
+  "n_validation": 100000,
+  "n_test": 100000,
+  "data_sha256": "fac07d8c27b7b39dc8233e92ddb161710b082e433894cc8cb2ddafafbb30435c",
+  "source_commit": "a59981db25c9124db39e62a382a18229a6d8087c",
+  "historical_reported_mse": {
+    "MLP": 0.94,
+    "Original LSTM": 0.91,
+    "Transformer": 0.15,
+    "Larger Transformer (best reported)": 0.12
+  },
+  "larger_transformer_saved_checkpoint_mse": 0.15640475240276502
+}

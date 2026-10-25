@@ -1,0 +1,10 @@
+{
+  "python": "3.12",
+  "numpy": "2.3.5",
+  "scipy": "1.17.0",
+  "pandas": "2.2.3",
+  "matplotlib": "3.10.8",
+  "notebook_execution": "Fresh in-process IPython session; environment prohibits socket-based kernels",
+  "inference_tests": "7 passed",
+  "models_retrained_for_notebook": false
+}
