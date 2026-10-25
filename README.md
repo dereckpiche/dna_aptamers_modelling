@@ -1,55 +1,53 @@
-# Predicting DNA Free Energy with Neural Networks
+# DNA Free-Energy Prediction with Neural Networks
 
-Can neural networks learn the relationship between a DNA sequence and its simulated folding free energy?
+Can neural networks learn the folding free energies calculated by NUPACK?
 
-This project compares a multilayer perceptron (MLP), an LSTM and a Transformer on one million randomly generated DNA sequences of 30 bases. The target values come from NUPACK thermodynamic calculations, rather than experimental measurements.
+The [new notebook](New_version_with_LSTM_fixed.ipynb) examines a corrected LSTM and the original larger Transformer's saved predictions. It uses the original dataset of one million random 30-base DNA strands, with regression diagnostics, confidence intervals and paired statistical tests.
 
-## Research workflow
+## Regression results
 
-1. **Generate the dataset.** Pair random DNA sequences with NUPACK free-energy labels.
-2. **Encode the sequences.** Use one-hot representations for the MLP and LSTM, and learned nucleotide embeddings with positional encoding for the Transformer.
-3. **Train the models.** Use a random 90%/10% training–evaluation split and mean squared error (MSE) as the regression loss.
-4. **Compare learning curves.** Examine prediction error as training progresses and identify overfitting.
-5. **Analyse prediction errors.** Compare the larger Transformer's predictions across free-energy quartiles to identify where performance deteriorates.
+| Model | Evaluation strands | MSE (95% CI) | R² (95% CI) |
+| --- | ---: | ---: | ---: |
+| Corrected LSTM | 100,000 new held-out strands | 0.59955 [0.59119, 0.60806] | 63.09% [62.63%, 63.55%] |
+| Larger Transformer, saved checkpoint | 100,000 historical evaluation strands | 0.15640 [0.15448, 0.15825] | 90.51% [90.38%, 90.64%] |
 
-### Free-energy distribution
+R² measures the fraction of the evaluation labels' centered variation removed by prediction. It is calculated from squared prediction errors, not squared correlation. The two full evaluation cohorts differ; the paired comparison below uses only identified shared strands.
 
-![Distribution of NUPACK free-energy labels for one million DNA sequences](doc/images/MFE_nupack.png)
+![Observed versus predicted free energies for the corrected LSTM and larger Transformer](doc/images/model_prediction_comparison.png)
 
-The labels are concentrated toward less negative free energies. Sequences in the low-energy tail are less common, making performance across the full distribution worth examining.
+## Statistical inference
 
-## Model comparison
+We resample whole label–prediction pairs 2,000 times with fixed seeds. A one-sided, studentized, null-centered bootstrap tests whether each mean squared-error reduction is positive. Constant benchmarks use training-label means; the Transformer's mean is reconstructed from the documented 90%/10% split and complete label sums.
 
-The [final report](doc/rapport_final.pdf) records the following approximate evaluation MSE values:
+| Comparison | Strands | Mean MSE reduction | Pointwise 95% CI | Holm-adjusted p |
+| --- | ---: | ---: | ---: | ---: |
+| Corrected LSTM vs training mean | 100,000 | 1.02481 | [1.00870, 1.04131] | 0.0015 |
+| Larger Transformer vs training mean | 100,000 | 1.49167 | [1.47247, 1.51064] | 0.0015 |
+| Larger Transformer vs corrected LSTM | 9,371 shared strands | 0.44503 | [0.41721, 0.47309] | 0.0015 |
 
-| Model | Reported MSE |
-| --- | ---: |
-| MLP | 0.94 |
-| LSTM | 0.91 |
-| Transformer | 0.15 |
-| Larger Transformer | 0.12 |
+All three raw Monte Carlo p-values are approximately **0.0005**: none of the 2,000 null resamples exceeded the observed statistic. This is the simulation's resolution, not an exact tail probability. Holm adjustment covers these three retrospective comparisons; the 95% intervals are pointwise.
 
-![Evaluation loss across MLP, LSTM and Transformer training](doc/images/comparaison.png)
+On the shared cohort, MSE is **0.59850 for the LSTM** and **0.15347 for the Transformer**. The paired results favor the Transformer on those strands. The confidence-interval figure separates each model's full-cohort R² from this common-cohort comparison.
 
-The Transformer achieved substantially lower error in these experiments. The models differ in size and training duration, so this comparison does not isolate architecture alone.
+![Regression confidence intervals and paired model comparison](doc/images/model_inference_comparison.png)
 
-### Transformer learning curve
+## Correcting the LSTM
 
-![Transformer training and evaluation mean squared error](doc/images/transformer.png)
+The original input flattened each strand to 120 values, causing unrelated strands to become successive recurrent steps. The corrected shape is **[batch, 30 bases, 4 nucleotide indicators]**, so the network processes bases within each strand independently.
 
-Training error continues to fall while evaluation error levels off, illustrating the importance of monitoring generalisation.
+The corrected model has two LSTM layers, 64 hidden units and 51,265 parameters. Fresh training used an 800,000/100,000/100,000 training–validation–test split, Adam with learning rate 0.001, and a 15-epoch limit. Checkpoint selection used validation MSE. Strand-independence and saved-weight checks passed. The smaller architecture and new split prevent attributing the improvement solely to the input correction.
 
-The larger Transformer's best reported MSE was approximately 0.12. Its later saved-checkpoint analysis produced an MSE of 0.1564, not 0.12. In that analysis, MSE ranged from 0.3500 in the lowest-energy quartile to 0.0347 in the highest-energy quartile.
+![Corrected LSTM learning curves](doc/images/lstm_fixed_learning.png)
 
-## Code and analysis
+## Interpretation and limitations
 
-- [MLP baseline](src/mlpbaseline.py)
-- [LSTM notebook](src/LSTM.ipynb)
-- [Transformer notebook](src/transformer.ipynb) and [larger Transformer](src/large_transformer.ipynb)
-- [Prediction-error analysis](src/results/AptAnalysis.ipynb)
-- [Final report and methodology](doc/rapport_final.pdf)
+The analysis is **retrospective and exploratory**. The larger Transformer's evaluation set was monitored historically: its intervals and p-values are **not adjusted for checkpoint selection**. Its saved-checkpoint MSE is 0.1564; the report's best value of 0.12 is a different result and is not assigned an invented confidence interval.
 
-These are historical experimental results. The evaluation split was monitored during training, so it is not an untouched final test. Learning NUPACK-generated labels does not establish accuracy on experimental free energies or predict binding affinity.
+Shared strands are reconstructed only where a canonical float32 label uniquely identifies a sequence in the original dataset. All 6,212 ambiguous historical rows are excluded from matching. The resulting 9,371-strand subset is not necessarily representative of all sequences.
+
+Bootstrap inference assumes independent randomly generated strands and is conditional on the fitted models. It excludes retraining variability and does not establish an architecture-wide ranking. Error diagnostics also show remaining bias and uneven accuracy across the energy range. These are NUPACK-generated targets, not experimental measurements or binding affinities.
+
+The [executed notebook](New_version_with_LSTM_fixed.ipynb) contains the calculations and saved figures. [Supporting files](corrected_lstm/) include weights, prediction pairs, split indices, the inference plan, tests and dependencies. Existing research notebooks remain unchanged.
 
 ---
 
