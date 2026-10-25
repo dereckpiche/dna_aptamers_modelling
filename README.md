@@ -4,6 +4,22 @@ Can neural networks learn the folding free energies calculated by NUPACK?
 
 The [new notebook](New_version_with_LSTM_fixed.ipynb) examines a corrected LSTM and the original larger Transformer's saved predictions. It uses the original dataset of one million random 30-base DNA strands, with regression diagnostics, confidence intervals and paired statistical tests.
 
+## Data and research workflow
+
+NUPACK supplies simulated thermodynamic free-energy labels, rather than experimental measurements or binding affinities. The dataset contains one million random DNA sequences, each 30 bases long.
+
+1. **Generate the data.** Pair DNA sequences with their NUPACK free energies.
+2. **Encode each strand.** The corrected LSTM receives one-hot nucleotide indicators. The Transformer uses learned nucleotide embeddings and positional encoding to represent the sequence.
+3. **Separate training and evaluation.** The original Transformer experiment used a 90%/10% training–evaluation split. The corrected LSTM uses separate 80%/10%/10% training, validation and test sets.
+4. **Monitor learning.** Minimize mean squared error and compare training and evaluation curves to identify overfitting.
+5. **Examine errors.** Study residual bias and accuracy across the energy range, alongside the regression metrics and paired inference reported below.
+
+### Free-energy distribution
+
+![Distribution of NUPACK free-energy labels for one million DNA sequences](doc/images/MFE_nupack.png)
+
+Labels are concentrated toward less negative energies. Strongly negative-energy strands are less common, so overall error alone can hide poorer performance in that part of the distribution.
+
 ## Regression results
 
 | Model | Evaluation strands | MSE (95% CI) | R² (95% CI) |
@@ -36,6 +52,21 @@ On the shared cohort, MSE is **0.59850 for the LSTM** and **0.15347 for the Tran
 The original input flattened each strand to 120 values, causing unrelated strands to become successive recurrent steps. The corrected shape is **[batch, 30 bases, 4 nucleotide indicators]**, so the network processes bases within each strand independently.
 
 ![Corrected LSTM learning curves](doc/images/lstm_fixed_learning.png)
+
+## Transformer results and error analysis
+
+The Transformer uses self-attention to represent relationships between nucleotide positions. The original larger model had approximately eight million parameters, compared with 51,265 in the corrected LSTM; the comparison therefore does not isolate architecture alone.
+
+The [final report](doc/rapport_final.pdf) records a best MSE of approximately **0.12** for the larger model. Its later saved-checkpoint analysis produced **0.1564**, the result reproduced here.
+
+In that saved-checkpoint analysis, MSE was approximately **0.3500** in the lowest-energy quartile and **0.0347** in the highest-energy quartile. The imbalance in the label distribution is relevant to this uneven accuracy. The historical evaluation split was monitored during training, so these results do not constitute an untouched final test.
+
+## Notebooks and report
+
+- [Corrected LSTM and paired statistical analysis](New_version_with_LSTM_fixed.ipynb)
+- [Original larger Transformer implementation](src/large_transformer.ipynb)
+- [Original prediction-error analysis](src/results/AptAnalysis.ipynb)
+- [Final report and mathematical methodology](doc/rapport_final.pdf)
 
 The [executed notebook](New_version_with_LSTM_fixed.ipynb) contains the calculations and saved figures. [Supporting files](corrected_lstm/) include weights, prediction pairs, split indices, the inference plan, tests and dependencies. Existing research notebooks remain unchanged.
 
