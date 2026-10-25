@@ -1,0 +1,8 @@
+numpy==2.3.5
+pandas==2.2.3
+scipy==1.17.0
+matplotlib==3.10.8
+nbformat==5.11.1
+IPython==9.17.1
+matplotlib-inline==0.2.2
+Jinja2>=3.1,<4
