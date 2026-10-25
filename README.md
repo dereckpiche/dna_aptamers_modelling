@@ -35,17 +35,7 @@ On the shared cohort, MSE is **0.59850 for the LSTM** and **0.15347 for the Tran
 
 The original input flattened each strand to 120 values, causing unrelated strands to become successive recurrent steps. The corrected shape is **[batch, 30 bases, 4 nucleotide indicators]**, so the network processes bases within each strand independently.
 
-The corrected model has two LSTM layers, 64 hidden units and 51,265 parameters. Fresh training used an 800,000/100,000/100,000 training–validation–test split, Adam with learning rate 0.001, and a 15-epoch limit. Checkpoint selection used validation MSE. Strand-independence and saved-weight checks passed. The smaller architecture and new split prevent attributing the improvement solely to the input correction.
-
 ![Corrected LSTM learning curves](doc/images/lstm_fixed_learning.png)
-
-## Interpretation and limitations
-
-The analysis is **retrospective and exploratory**. The larger Transformer's evaluation set was monitored historically: its intervals and p-values are **not adjusted for checkpoint selection**. Its saved-checkpoint MSE is 0.1564; the report's best value of 0.12 is a different result and is not assigned an invented confidence interval.
-
-Shared strands are reconstructed only where a canonical float32 label uniquely identifies a sequence in the original dataset. All 6,212 ambiguous historical rows are excluded from matching. The resulting 9,371-strand subset is not necessarily representative of all sequences.
-
-Bootstrap inference assumes independent randomly generated strands and is conditional on the fitted models. It excludes retraining variability and does not establish an architecture-wide ranking. Error diagnostics also show remaining bias and uneven accuracy across the energy range. These are NUPACK-generated targets, not experimental measurements or binding affinities.
 
 The [executed notebook](New_version_with_LSTM_fixed.ipynb) contains the calculations and saved figures. [Supporting files](corrected_lstm/) include weights, prediction pairs, split indices, the inference plan, tests and dependencies. Existing research notebooks remain unchanged.
 
